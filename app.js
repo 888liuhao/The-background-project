@@ -1,15 +1,37 @@
 const express = require('express');
 const path = require('path');
 
+//引入模板引擎模块
+const artTemplate = require('art-template'); 
+const express_template = require('express-art-template');
+
+const app = express();
+
+//中间件
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({
+    extended: true
+})) // for parsing application/x-www-form-urlencoded
+
+//配置express框架的模板引擎为art-template
+app.set('views',path.join(__dirname,'/views/'));
+app.engine('html',express_template);
+app.set('view engine','html');
+
 //导入路由中间件模块
 const router = require('./router/router.js')
-const app = express();
+
+
+//dotenv是将环境变量从.evn文件加载至process.evn模块
+//引入.env
+require('dotenv').config({path:'.env'});
 
 app.use(router)
 
 //托管静态资源文件
 app.use('/assets',express.static(path.join(__dirname, 'assets')))
 
-app.listen(3696,()=>{
+console.log(process.env.PORT);
+app.listen(process.env.PORT,()=>{
     console.log('已连接');
 })
