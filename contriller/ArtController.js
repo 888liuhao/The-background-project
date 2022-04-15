@@ -75,7 +75,7 @@ ArtController.addArtss = async (req, res) => {
             //删除原路径
             let oldAva = req.session.userInfo.avatar;
             oldAva = path.join(path.dirname(__dirname), oldAva);
-            fs.unlink(oldAva, (err) => { })
+            fs.unlink(oldAva, (err) => { });
         } catch (err) {
             console.log('文件上传失败');
         }
