@@ -35,7 +35,7 @@ loginckce.users = async (req, res) => {
         })
     }
 
-}
+};
 
 //退出
 loginckce.loginquit = async (req, res) => {

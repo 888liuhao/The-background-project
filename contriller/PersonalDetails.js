@@ -56,7 +56,7 @@ PersonalDetails.avatar = async (req, res) => {
         })
     }
 
-}
+};
 
 //更新个人信息
 PersonalDetails.upSave = async (req, res) => {
