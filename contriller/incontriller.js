@@ -1,5 +1,5 @@
-const res = require('express/lib/response');
-const path = require('path');
+// const res = require('express/lib/response');
+// const path = require('path');
 const incontrller = {}
 
 // 导入数据库模型
@@ -10,14 +10,7 @@ incontrller.index = (req, res) => {
     res.render('index.html')
 }
 
-incontrller.login = (req, res) => {
-    res.render(`login.html`)
-}
-
-incontrller.test = (req, res) => {
-    res.render(`test.html`)
-}
-
+//设置后台名称
 incontrller.sugg = async (req,res)=>{
    let {name} = req.body
     let sql = `UPDATE settings SET val = '${name}' WHERE  id = 2`;

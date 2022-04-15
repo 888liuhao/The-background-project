@@ -1,58 +1,137 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>托尔管理系统</title>
   <link rel="stylesheet" href="/assets/layui/css/layui.css">
 </head>
-<body>
-<div class="layui-layout layui-layout-admin">
-  <!-- 头部公共样式 -->
-  {{ include "./common/header.html"}}
-  <!-- side公共样式 -->
-  {{ include "./common/side.html" }}
-  
-  <div class="layui-body">
-    <!-- 内容主体区域 -->
-    <div style="padding: 15px;">
-      <table class="layui-hide" id="test"></table>
-    </div>
-  </div>
 
-  <div class="layui-footer">
-    <!-- 底部固定区域 -->
-    底部固定区域
-  </div>
-  
-<script src="/assets/layui/layui.js"></script>
-<script>
-    //JS 
-    layui.use(['element', 'layer', 'util'], function(){
-      var element = layui.element
-      ,layer = layui.layer
-      ,util = layui.util
-      ,$ = layui.$;
-      
-      //头部事件
-      util.event('lay-header-event', {
-        //左侧菜单事件
-        menuLeft: function(othis){
-          layer.msg('展开左侧菜单的操作111', {icon: 0});
-        }
-        ,menuRight: function(){
-          layer.open({
-            type: 1
-            ,content: '<div style="padding: 15px;">处理右侧面板的操作234</div>'
-            ,area: ['260px', '100%']
-            ,offset: 'rt' //右上角
-            ,anim: 5
-            ,shadeClose: true
-          });
-        }
+<body>
+  <div class="layui-layout layui-layout-admin">
+    <!-- 头部公共样式 -->
+    {{ include "./common/header.html"}}
+    <!-- side公共样式 -->
+    {{ include "./common/side.html" }}
+
+    <div class="layui-body">
+      <!-- 内容主体区域 -->
+      <div style="padding: 15px;">
+        <table class="layui-hide" id="test" lay-filter="test"></table>
+      </div>
+    </div>
+
+    <script type="text/html" id="toolbarDemo">
+    <!-- <div class="layui-btn-container"> -->
+      <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+      <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+      <a class="layui-btn layui-btn-sm" style="margin-right:10px;" href="/addArti" >添加文章</a>
+      <!-- <div class="layui-form-item"> -->
+        <!-- <label class="layui-form-label">标题</label> -->
+          <div class="layui-input-inline" style="margin: left 10px;">
+          <input type="text" name="title"  lay-verify="title" autocomplete="off" placeholder="搜索标题"
+          class="layui-input">
+          </div>
+          <a class="layui-btn layui-btn-sm" style="margin-right:10px;" href="" >搜索</a>
+    <!-- </div> -->
+      <!-- </div> -->
+  </script>
+    <script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+  </script>
+
+    <script src="/assets/layui/layui.js"></script>
+    <script>
+      layui.use('table', function () {
+        var table = layui.table;
+        table.render({
+          elem: '#test'
+          , url: '/aData'
+          , toolbar: '#toolbarDemo'
+          , cols: [[
+            { type: 'checkbox', fixed: 'left' }
+            , { field: 'id', title: 'ID', fixed: 'left', unresize: true, sort: true, width: 60 }
+            , { field: 'title', title: '标题', edit: 'text', width: 130 }
+            , {field: '', title: '内容', templet: (data) => {
+                let mydata = JSON.stringify(data)
+                return `<a href="javascript:;" onclick='showContent(${mydata})'>点击查看内容</a>`
+                }}
+            , {field: 'pic', title: '封面图', templet: ({ pic }) => {
+                return `<img  src="${pic}"/></a>`}}
+            , { field: 'username', title: '发布者', sort: true, width: 100 }
+            , { field: 'statusText', title: '状态', width: 100 }
+            , {field: 'add_date', title: '更新时间', width: 200, templet: ({ add_date }) => {
+                return layui.util.toDateString(add_date, 'yyyy-MM-dd HH:mm:ss');}}
+            , { field: 'cate_name', title: '所属分类', sort: true, width: 100 }
+            , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+          ]]
+          , page: {
+            limit: 10,
+            prev: '上一页',
+            next: '下一页'
+          }
+        });
+
+        //左工具栏事件
+        table.on('toolbar(test)', function (obj) {
+          var checkStatus = table.checkStatus(obj.config.id);
+          switch (obj.event) {
+            case 'getCheckData':
+              var data = checkStatus.data;
+              layer.alert(JSON.stringify(data));
+              break;
+            case 'getCheckLength':
+              var data = checkStatus.data;
+              layer.msg('选中了：' + data.length + ' 个');
+              break;
+            case 'isAll':
+              layer.msg(checkStatus.isAll ? '全选' : '未全选')
+              break;
+          };
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function (obj) {
+          var data = obj.data;
+          //console.log(obj)
+          if (obj.event === 'del') {
+            layer.confirm('是否确认删除', async function (index) {
+              const { id } = data;
+              const { code } = await $.post('/delArt', { id })
+              if (code === 0) {
+                obj.del()
+              }
+              layer.msg('删除成功', { icon: 1 })
+            });
+          } else if (obj.event === 'edit') {
+            console.log('edit', data);
+          }
+        });
       });
-      
-    });
+
+
+      // 弹窗显示内容
+      function showContent(data) {
+        let { title, content, username, add_date } = data;
+        console.log(add_date);
+        add_date = layui.util.toDateString(add_date, 'yyyy-MM-dd HH:mm:ss')
+        content = `<div style="padding:15px">
+        <h2>${title}</h2>
+        <div> ${username} ${add_date}</div>
+        ${content}
+      </div>`
+        //页面层
+        layer.open({
+          content,
+          type: 1,
+          area: ['500px', '500px'], //宽高
+        });
+      }
+
+
     </script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,12 +9,13 @@
     <link rel="stylesheet" href="/assets/layui/css/layui.css">
     <link rel="stylesheet" href="/assets/css/login.css">
 </head>
+
 <body>
     <div class="login">
         <h1>托尔管理系统</h1>
-        <form method="post">
+        <form action="/users" method="post" id="loginData">
             <input type="text" name="username" placeholder="账号" />
-            <input type="password" name="password" placeholder="密码"  />
+            <input type="password" name="password" placeholder="密码" />
             <button type="submit" id="loginBtn" class="btn btn-primary btn-block btn-large">登录</button>
         </form>
     </div>
@@ -21,9 +23,19 @@
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/layui/layui.js"></script>
 <script>
-    $("#loginBtn").on('click',()=>{
-        layer.msg('login')
+    $("#loginBtn").on('click', () => {
+        const data = $("#loginData").serialize()
+        console.log(data);
+        $.post('/users', data).then(res => {
+            // const { code, message } = res;
+            if (res.code == 0) {   
+                location.href = '/'
+            }else{
+                layer.msg('账号或密码错误');
+            }
+        })
         return false;
     })
 </script>
+
 </html>

@@ -1,44 +1,236 @@
+<style>
+  body .layer_bg .layui-layer-title {
+    background-color: rgb(128, 218, 80);
+    border-color: rgb(128, 218, 80);
+  }
+
+  .box {
+    width: 530px;
+  }
+</style>
 <div class="layui-header">
-    <div class="layui-logo layui-hide-xs layui-bg-black" id="n_id">托尔管理系统</div>
-    <!-- 头部区域（可配合layui 已有的水平导航） -->
-    <ul class="layui-nav layui-layout-left">
-      <!-- 移动端显示 -->
-      <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
-        <i class="layui-icon layui-icon-spread-left"></i>
-      </li>
-      
-      <li class="layui-nav-item layui-hide-xs"><a href="">nav 1</a></li>
-      <li class="layui-nav-item layui-hide-xs"><a href="">nav 2</a></li>
-      <li class="layui-nav-item layui-hide-xs"><a href="">nav 3</a></li>
-      <li class="layui-nav-item">
-        <a href="javascript:;">nav groups</a>
-        <dl class="layui-nav-child">
-          <dd><a href="">menu 11</a></dd>
-          <dd><a href="">menu 22</a></dd>
-          <dd><a href="">menu 33</a></dd>
-        </dl>
-      </li>
-    </ul>
-    <ul class="layui-nav layui-layout-right">
-      <li class="layui-nav-item layui-hide layui-show-md-inline-block">
-        <a href="javascript:;">
-          <img src="https://img1.baidu.com/it/u=3033707851,2105650126&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500"  class="layui-nav-img">
-          托尔
-        </a>
-        <dl class="layui-nav-child">
-          <dd><a href="">个人信息</a></dd>
-          <dd><a href="">修改密码</a></dd>
-          <dd><a href="./login.html">退出</a></dd>
-        </dl>
-      </li>
-      <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
-        <a href="javascript:;">
-          <i class="layui-icon layui-icon-more-vertical"></i>
-        </a>
-      </li>
-    </ul>
-  </div>
-  <script>
-    let n_name = localStorage.getItem('n_name');
-    document.getElementById('n_id').innerHTML=n_name;
-  </script>
+  <div class="layui-logo layui-hide-xs layui-bg-black" id="n_id">托尔管理系统</div>
+  <!-- 头部区域（可配合layui 已有的水平导航） -->
+  <ul class="layui-nav layui-layout-left">
+    <!-- 移动端显示 -->
+    <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
+      <i class="layui-icon layui-icon-spread-left"></i>
+    </li>
+
+    <li class="layui-nav-item layui-hide-xs"><a href="">nav 1</a></li>
+    <li class="layui-nav-item layui-hide-xs"><a href="">nav 2</a></li>
+    <li class="layui-nav-item layui-hide-xs"><a href="">nav 3</a></li>
+    <li class="layui-nav-item">
+      <a href="javascript:;">nav groups</a>
+      <dl class="layui-nav-child">
+        <dd><a href="">menu 11</a></dd>
+        <dd><a href="">menu 22</a></dd>
+        <dd><a href="">menu 33</a></dd>
+      </dl>
+    </li>
+  </ul>
+  <ul class="layui-nav layui-layout-right">
+    <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+      <a href="javascript:;">
+        <img
+          src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F9efaa858504e320d3bd9df3c391d2e2cc39c9d2917cbc-MSqmCK_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1652434354&t=7bbbe00200a04692ebe884ff91462bdf"
+          id="picc" class="layui-nav-img">
+        <span id="david"></span>
+      </a>
+      <dl class="layui-nav-child">
+        <dd><a href="javascript:;" id="personal">个人信息</a></dd>
+        <dd><a href="javascript:;" id="personalp">修改密码</a></dd>
+        <dd><a href="javascript:;" id="loginquit">退出</a></dd>
+      </dl>
+    </li>
+    <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+      <a href="javascript:;">
+        <i class="layui-icon layui-icon-more-vertical"></i>
+      </a>
+    </li>
+  </ul>
+
+</div>
+<script src="/assets/layui/layui.js"></script>
+<script src="/assets/js/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+<script>
+  //后台名显示
+  let n_name = localStorage.getItem('n_name');
+  document.getElementById('n_id').innerHTML = n_name;
+
+  //获取cookie并设置到页面上
+  let { username, password, avatar } = JSON.parse(Cookies.get('userInfo'));
+  $('#picc').attr('src', avatar)
+  $('#david').text(username)
+
+
+  //退出
+  $("#loginquit").on('click', async (exent) => {
+    const { message, code } = await $.post('/loginquit');
+    if (code == 0) {
+      layer.msg('再见');
+      setTimeout(() => {
+        location.href = '/login'
+      }, 500)
+    }
+  })
+
+  //操作个人信息
+  let index;
+  $('#personal').on('click', () => {
+    let { username, password, avatar, intro } = JSON.parse(Cookies.get('userInfo'));
+    let PerContent = `
+              <div class="box">
+                <div class="layui-form-item" style="padding:10px">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-inline" style="width:330px">
+              <input type="text" name="username" value='${username}' lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item" style="padding:10px">
+            <label class="layui-form-label">头像</label>
+                          <div class="layui-upload">
+                <button type="button" class="layui-btn" id="test1">上传图片</button>
+                <div class="layui-upload-list">
+                  
+                  <p id="demoText"></p>
+                </div>
+              </div>   
+            </div>
+            <div class="layui-form-item" style="padding:10px">
+            <label class="layui-form-label"></label>
+            <div class="layui-input-inline" style="width:330px">
+              <img class="layui-upload-img" id="demo1" style="width:100px">
+              </div>
+          </div>
+              <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">个性签名</label>
+                <div class="layui-input-block">
+                  <textarea class="layui-textarea" id="introk" cols="20" rows="6">${intro}</textarea>
+                </div>
+              </div>
+          </div> 
+          <div style="text-align:center;">
+            <button type="button" id="saveMessage" class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">提交</button>
+          </div>
+            `
+    index = layer.open({
+      title: "个人资料",
+      type: 1,
+      area: ['600px', '550px'], //宽高
+      content: PerContent,
+      success: function (layero, index) {
+        initUpload();
+        let { avater } = JSON.parse(Cookies.get('userInfo'));
+        console.log(avatar);
+        $("#demo1").attr('src', avatar)//回显
+
+      }
+    });
+  })
+
+  //修改密码
+  $('#personalp').on('click', () => {
+    let PerContentp = `
+    <div class="box">
+      <div class="layui-form-item" style="padding:10px">
+            <label class="layui-form-label">原密码</label>
+            <div class="layui-input-inline" style="width:330px">
+              <input type="password" oncopy="return false" onpaste="return false" oncut="return false" id="paw1" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item" style="padding:10px">
+            <label class="layui-form-label">新密码</label>
+            <div class="layui-input-inline" style="width:330px">
+              <input type="password" oncopy="return false" onpaste="return false" oncut="return false" id="paw2" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item" style="padding:10px">
+            <label class="layui-form-label">确认新密码</label>
+            <div class="layui-input-inline" style="width:330px">
+              <input type="password" oncopy="return false" onpaste="return false" oncut="return false"  id="paw3" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+    </div>
+          <div style="text-align:center;">
+            <button type="button" id="savepaw" class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">确认修改</button>
+          </div>  
+            `
+    index = layer.open({
+      title: "修改密码",
+      type: 1,
+      skin: "layer_bg",
+      area: ['550px', '350px'], //宽高
+      content: PerContentp
+    });
+  })
+
+  let cookdate = JSON.parse(Cookies.get('userInfo'));
+  $(document).on('click', '#savepaw', async function () {
+    let paw1 = $("#paw1").val();
+    let paw2 = $("#paw2").val();
+    let paw3 = $("#paw3").val();
+    if (paw2 !== paw3) {
+      layer.msg('密码不一致', { icon: 2 })
+      return;
+    }
+    let ress = await $.post('/caPass', { paw1, paw2, paw3 }).then(res => {
+      if (res.paw1 !== cookdate.password) {
+        layer.msg(res.message, { icon: 2 })
+        return false
+      }
+      if (res.code == 0) {
+        layer.msg(res.message, { icon: 2 })
+        location.reload();
+      }
+    })
+
+
+  })
+
+
+  //头像上传
+  function initUpload() {
+    const upload = layui.upload;
+    const element = layui.element;
+    var uploadInst = upload.render({
+      elem: '#test1',
+      url: '/avatar',
+      before: function (obj) {
+        obj.preview(function (index, file, result) {
+          $("#demo1").attr('src', result)
+        });
+      },
+      done: function (res) {
+        console.log(res);
+        if (res.code === 0) {
+          let { avatar } = JSON.parse(Cookies.get('userInfo'));
+          $('#picc').attr('src', avatar);
+          return layer.msg('上传成功')
+        } else {
+          return layer.msg('上传失败')
+        }
+      }
+    })
+  }
+  //提交个人信息到数据库
+  $(document).on('click', '#saveMessage', async function () {
+    const { id, avatar } = JSON.parse(Cookies.get('userInfo'));
+    const intro = $("#introk").val();   //双标签用val获取
+    const { code, message } = await $.post('/upSave', {
+      id,
+      intro
+    })
+    if (code === 0) {
+      layer.close(index);  //关闭弹出层
+      layer.msg(message, { icon: 1 })
+    } else {
+      layer.msg(message, { icon: 2 })
+    }
+  })
+
+
+
+
+</script>
