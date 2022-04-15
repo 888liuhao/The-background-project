@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>托尔管理系统</title>
   <link rel="stylesheet" href="/assets/layui/css/layui.css">
+  <link rel="stylesheet" href="/assets/css/lightbox.min.css">
 </head>
 
 <body>
@@ -43,6 +44,7 @@
   </script>
 
     <script src="/assets/layui/layui.js"></script>
+    <script src="/assets/js/lightbox-plus-jquery.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
     <script>
       layui.use('table', function () {
@@ -62,8 +64,10 @@
               }
             }
             , {
-              field: 'pic', title: '封面图', templet: ({ pic }) => {
-                return `<img  src="${pic}"/></a>`
+              field: 'pic', title: '封面图',width: 150, templet: ({ pic }) => {
+                return `<a class="example-image-link" href="${pic}" data-lightbox="example-set" data-title="Click the right half of the image to move forward.">
+                        <img class="example-image" src="${pic}" alt=""/>
+                      </a>`
               }
             }
             , { field: 'username', title: '发布者', sort: true, width: 100 }
