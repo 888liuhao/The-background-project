@@ -102,7 +102,7 @@
         });
 
         //监听行工具事件
-        table.on('tool(test)', function (obj) {
+        table.on('tool(test)', async function (obj) {
           var data = obj.data;
           //console.log(obj)
           if (obj.event === 'del') {
@@ -115,11 +115,13 @@
               layer.msg('删除成功', { icon: 1 })
             });
           } else if (obj.event === 'edit') {
-            console.log('edit', data);
+            const {id} = data
+            console.log(id);
+            location.href = '/upArti?id=' + id
           };
         });
         //搜索功能
-        $(document).on('click','#souLi', () => {
+        $(document).on('click', '#souLi', () => {
           //获取input值
           let keyval = $("#keyval").val();
           //发送请求
@@ -128,7 +130,6 @@
             where: { keyval }
           })
         })
-
       });
 
 

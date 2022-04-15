@@ -35,6 +35,10 @@ router.post('/delArt',ArtController.delArt)
 router.get('/addArti',ArtController.addArti)
 //文章添加
 router.post('/addArtss',upload.single('pic'),ArtController.addArtss)
+//文章编辑页面
+router.get('/upArti',ArtController.upArti)
+//文章编辑
+router.post('/upArt',upload.single('pic'),ArtController.upArt)
 
 //系统页面
 router.get('/system',CateController.system)
