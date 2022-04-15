@@ -79,7 +79,7 @@ ArtController.addArtss = async (req, res) => {
         } catch (err) {
             console.log('文件上传失败');
         }
-    }
+    };
     //更新到数据库
     const sql = `insert into article
     (title,cate_id,status,content,author,pic) 
