@@ -12,14 +12,21 @@ ArtController.index = (req, res) => {
 
 //文章数据
 ArtController.aData = async (req, res) => {
-    const { page, limit } = req.query;
+    const { page, limit, keyval } = req.query;
     //sql语句查询文章数
-    const sql = `select count(id) as count from article`
-    const result = await query(sql);
+    let sql = `select count(id) as count from article where 1 `;
+    if (keyval) {
+        sql += `and title like '%${keyval}%'`
+    }
+    let result = await query(sql);
     const count = result[0].count;
     const forMula = (page - 1) * limit;
-    const sql1 = `select t1.*,t2.cate_name,t3.username from article t1 left join category t2 on t1.cate_id = t2.cate_id left join users t3 on t1.author = t3.id
-    limit ${forMula},${limit}`
+    let sql1 = `select t1.*,t2.cate_name,t3.username from article t1 left join category t2 on t1.cate_id = t2.cate_id left join users t3 on t1.author = t3.id 
+    where 1 `
+    if (keyval) {
+        sql1 += `and t1.title like '%${keyval}%'`
+    }
+    sql1 += `order by t1.id desc limit ${forMula}${limit}`
     let result1 = await query(sql1)
     result1 = result1.map((item) => {
         const { cate_name, status } = item;
@@ -88,13 +95,13 @@ ArtController.addArtss = async (req, res) => {
     const { affectedRows } = await query(sql);
     if (affectedRows > 0) {
         res.json({
-            code:0,
-            message:'添加成功'
+            code: 0,
+            message: '添加成功'
         })
-    }else{
+    } else {
         res.json({
-            code:-8,
-            message:'添加失败'
+            code: -8,
+            message: '添加失败'
         })
     }
 }
