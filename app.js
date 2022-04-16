@@ -1,18 +1,22 @@
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
 const session = require('express-session');
 const turnover = require('./middleware/turnover.js');
 
 
 //导入路由中间件模块
 const router = require('./router/router.js')
-
+const reception = require('./router/reception.js')
 
 //引入模板引擎模块
 // const artTemplate = require('art-template'); 
 const express_template = require('express-art-template');
 
 const app = express();
+
+//跨域中间件
+app.use(cors());
 
 //托管静态资源文件
 app.use('/assets',express.static(path.join(__dirname, 'assets')))
@@ -29,6 +33,9 @@ app.set('views',path.join(__dirname,'/views/'));
 app.engine('html',express_template);
 app.set('view engine','html');
 
+//前台路由
+app.use('/date',reception)
+
 //session初始化设置
 app.use(session({
     name:'sessionID',
@@ -39,6 +46,7 @@ app.use(session({
         maxAge:60000 * 30
     }
 }))
+
 //引入防翻墙
 app.use(turnover)
 

@@ -1,4 +1,6 @@
-const res = require('express/lib/response')
+// const res = require('express/lib/response')
+
+
 const path = require('path')
 const fs = require('fs')
 const ArtController = {}
@@ -154,7 +156,7 @@ ArtController.upArt =async (req, res) => {
         }else{
             sql = `update article set title='${title}', 
             content='${content}', cate_id='${cate_id}', 
-            status='${status}', 
+            status='${status}'  
             where id=${id}`
         };
         //更新到数据库

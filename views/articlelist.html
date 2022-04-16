@@ -114,7 +114,9 @@
               const { id } = data;
               const { code } = await $.post('/delArt', { id })
               if (code === 0) {
-                obj.del()
+                obj.del();
+                table.reload('#test')
+
               }
               layer.msg('删除成功', { icon: 1 })
             });

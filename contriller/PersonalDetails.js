@@ -27,9 +27,9 @@ PersonalDetails.avatar = async (req, res) => {
             fs.renameSync(oldName, newName)
             pic = `upload/${filename}${extName}`
             //删除原图
-            let oldAva = req.session.userInfo.avatar;
-            oldAva = path.join(path.dirname(__dirname), oldAva);
-            fs.unlink(oldAva, (err) => { })
+            // let oldAva = req.session.userInfo.avatar;
+            // oldAva = path.join(path.dirname(__dirname), oldAva);
+            // fs.unlink(oldAva, (err) => { })
         } catch (err) {
             console.log('文件上传失败');
         }
