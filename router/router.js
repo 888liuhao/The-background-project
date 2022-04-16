@@ -47,7 +47,7 @@ router.get('/system',CateController.system)
 router.post('/loginquit',loginckce.loginquit)
 
 //系统名修改
-router.post('/sugg',incontrller.sugg)
+router.post('/sugg',upload.single('upLogo'),incontrller.sugg)
 router.get('/ttyues',incontrller.ttyues)
 
 //分类列表数据
@@ -67,6 +67,9 @@ router.post('/caPass',PersonalDetails.caPass)
 
 //头像上传
 router.post('/avatar',upload.single('file'),PersonalDetails.avatar)
+
+//logo上传
+router.post('/logo',upload.single('file'),incontrller.logo)
 
 
 

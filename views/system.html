@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -7,60 +8,129 @@
   <link rel="stylesheet" href="/assets/layui/css/layui.css">
 </head>
 <body>
-<div class="layui-layout layui-layout-admin">
-  <!-- 头部公共样式 -->
-  {{ include "./common/header.html"}}
-  <!-- side公共样式 -->
-  {{ include "./common/side.html" }}
-  
-  <div class="layui-body">
-    <!-- 内容主体区域 -->
-    <div style="padding: 15px;">
-      <form class="layui-form layui-form-pane">
-        <div class="layui-form-item">
-          <label class="layui-form-label">后台名称：</label>
-          <div class="layui-input-inline">
-            <input type="text" name="name" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-          </div>
-        </div>
-        <div class="layui-form-item">
-          <div class="layui-input-block">
-            <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即修改</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-  
-<script src="/assets/layui/layui.js"></script>
-<script>
-    layui.use(['form', 'layedit', 'laydate'], function(){
-  var form = layui.form
-  ,layer = layui.layer
-  ,layedit = layui.layedit
-  ,laydate = layui.laydate,
-  $ = layui.jquery;
+  <div class="layui-layout layui-layout-admin">
+    <!-- 头部公共样式 -->
+    {{ include "./common/header.html"}}
+    <!-- side公共样式 -->
+    {{ include "./common/side.html" }}
 
-  
-  //监听提交
-  form.on('submit(demo1)', function(data){
-      let {field} = data;
-      $.ajax({
-        type:"post",
-        url:'/sugg',
-        data:field
-      }).then((res)=>{
-        if(res.code === 100) {
-          location.href='/'
-        }
+    <div class="layui-body">
+      <!-- 内容主体区域 -->
+      <div style="padding: 15px;">
+        <form class="layui-form layui-form-pane" active="/sugg" method="post" id="setForm">
+          <div class="layui-form-item">
+            <label class="layui-form-label">后台名称：</label>
+            <div class="layui-input-inline">
+              <input type="text" id="logoname" name="name" lay-verify="required" placeholder="请输入" autocomplete="off"
+                class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">logo</label>
+            <input type="file" name="upLogo" id="upLogo" style="display: none;" onchange="upLogoFn(this)">
+            <div class="layui-upload">
+              <button type="button" class="layui-btn" id="upLogoBtn">上传图片</button>
+              <img src="" id="showImg" style="width: 100px; display: block;" alt="">
+              <!-- <div class="layui-upload-list">
+                <p id="demoText"></p>
+              </div> -->
+            </div>
+          </div>
+          <!-- <div class="layui-form-item" style="padding:10px">
+            <label class="layui-form-label"></label>
+            <div class="layui-input-inline" style="width:330px">
+              <img class="layui-upload-img" id="showLogo" style="width:100px">
+            </div>
+          </div> -->
+      </div>
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button class="layui-btn" id="btn" lay-submit lay-filter="formDemo">立即提交</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+      </div>
+      </form>
+
+    </div>
+    <!-- <script src="/assets/layui/layui.js"></script> -->
+    <script>
+
+      $('#upLogoBtn').click(function () {
+        $('#upLogo')[0].click()
       })
 
-    return false;
-  });
- 
+      function upLogoFn(upLogoFile) {
+        let file = upLogoFile.files[0];
+        let reader = new FileReader();
+        reader.readAsDataURL(file)
+        reader.onload = function () {
+          $('#showImg').attr('src', this.result)
+        }
+      }
+      layui.use(['form', 'laydate', 'layer'], function () {
+        let form = layui.form,
+          layer = layui.layer,
+          laydate = layui.laydate,
+          $ = layui.jquery;
+        const element = layui.element;
+        $('#btn').click(function () {
+          let formData = new FormData($('#setForm')[0])
+          $.ajax({
+            type: "post",
+            url: '/sugg',
+            data: formData,
+            contentType: false,
+            processData: false
+          }).then((res) => {
+            if (res.code === 100) {
+              location.href = '/';
+            }
+          })
+          return false
+        })
 
-});
-</script>
+        // function inUplogo() {
+        //     console.log(1); 
+        //     var uploadInst = upload.render({
+        //       elem: '#upLogo',
+        //       url: '/sugg',
+        //       before: function (obj) {
+        //         obj.preview(function (index, file, result) {
+        //           $("#showLogo").attr('src', result)
+        //         });
+        //       },
+        //       done: function (res) {
+        //         console.log(res);
+        //       }
+        //     });
+        //   }
+        //   inUplogo(); //图片上传 
+
+        //监听提交
+        // form.on('submit(formDemo)', function (data) {
+        // console.log(111); 
+
+        //   console.log(formData.get('name'));
+
+        // let { field } = data;
+        // $.ajax({
+        //   type: "post",
+        //   url: '/sugg',
+        //   data: field
+        // }).then((res) => {
+        //   console.log(field);
+        //   if (res.code === 100) {
+        //     localStorage.setItem('n_name', field.name)
+        //     // location.href='/';
+        //   }
+        // })
+        // return false;
+        // });
+      });
+
+
+    </script>
     </script>
 </body>
+
 </html>

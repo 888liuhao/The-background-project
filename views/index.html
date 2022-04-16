@@ -97,9 +97,7 @@
       //博客名
       let ttyue = await $.get('/ttyues');
       $('#n_id').text(ttyue[0].val);
-      console.log(ttyue);
-      localStorage.setItem('n_name', ttyue[0].val)
-
+      localStorage.setItem('n_name', ttyue[0].blog_name)
     });
   </script>
 </body>
